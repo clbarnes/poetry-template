@@ -1,0 +1,59 @@
+_tasks:
+  - "git init"
+  - poetry add --group dev black ruff mypy pytest pdoc3
+  - poetry install
+  - make format
+
+_subdirectory: project
+
+# ANSWERS
+
+package_name:
+  type: str
+  help: Package name
+  placeholder: my_package
+
+author:
+  type: str
+  placeholder: A. N. Moose
+
+author_email:
+  type: str
+  placeholder: my.email@host.com
+
+min_python:
+  type: int
+  default: 9
+  help: "Minimum python 3 minor version"
+  choices:
+    - 8
+    - 9
+    - 10
+    - 11
+
+description:
+  type: str
+  default: ""
+
+ignore_lockfile:
+  type: bool
+  default: true
+  help: "Whether to add poetry.lock to .gitignore. `true` is good for libraries, `false` is good for deployable applications."
+
+license:
+  type: str
+  default: MIT
+  choices:
+    - Apache-2.0
+    - BSD-2-Clause
+    - BSD-3-Clause
+    - BSD-4-Clause
+    - GPL-2.0-only
+    - GPL-2.0-or-later
+    - GPL-3.0-only
+    - GPL-3.0-or-later
+    - LGPL-2.1-only
+    - LGPL-2.1-or-later
+    - LGPL-3.0-only
+    - LGPL-3.0-or-later
+    - MIT

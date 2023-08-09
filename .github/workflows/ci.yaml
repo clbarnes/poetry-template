@@ -1,0 +1,17 @@
+on: [push, pull_request]
+name: Lint, test, deploy package
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+      - run: pip install poetry copier
+      - run: make example

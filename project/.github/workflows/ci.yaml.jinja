@@ -1,0 +1,52 @@
+on: [push, pull_request]
+name: Lint, test, deploy package
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+      - uses: abatilo/actions-poetry@v2
+      - run: poetry check
+      - run: make install-dev
+      - run: make lint-notype
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:{% for ver in [
+            8, 9, 10, 11
+        ]%}{% if ver >= min_python %}
+          - "3.{{ ver }}"{% endif %}{% endfor %}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: {{ '${{ matrix.python-version }}' }}
+          cache: pip
+      - uses: abatilo/actions-poetry@v2
+      - run: make install-dev
+        name: Install package
+      - run: make test
+
+  deploy-package:
+    runs-on: ubuntu-22.04
+    needs: [lint, test]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - uses: abatilo/actions-poetry@v2
+      - name: Publish package
+        run: poetry publish --build --username __token__ --password {{ '"${{ secrets.PYPI_PASSWORD }}"' }}
