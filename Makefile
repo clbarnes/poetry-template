@@ -9,7 +9,7 @@ example: clean-example
 		--trust \
 		--defaults \
 		-d package_name=example_package \
-		-d min_python=10 \
+		-d min_python=11 \
 		-d author=Nobody \
 		-d author_email="nobody@nowhere.no" \
 		-d license=MIT
